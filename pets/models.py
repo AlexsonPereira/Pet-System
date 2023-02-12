@@ -2,9 +2,9 @@ from django.db import models
 
 # Create your models here.
 class SexPets(models.TextChoices):
-    FEMALE = "female"
-    MALE = "male"
-    NOTINFORMED = "not informed"
+    FEMALE = "Female"
+    MALE = "Male"
+    DEFAULT = "Not Informed"
 
 
 class Pet(models.Model):
@@ -12,5 +12,8 @@ class Pet(models.Model):
     age = models.IntegerField()
     weight = models.FloatField()
     sex = models.CharField(
-        max_length=20, choices=SexPets.choices, default=SexPets.NOTINFORMED
+        max_length=20, choices=SexPets.choices, default=SexPets.DEFAULT
+    )
+    group = models.ForeignKey(
+        "groups.Group", on_delete=models.PROTECT, related_name="pets"
     )
