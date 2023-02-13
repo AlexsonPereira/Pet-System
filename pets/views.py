@@ -15,6 +15,7 @@ import ipdb
 class PetsView(APIView, PageNumberPagination):
     def get(self, req):
         pets = Pet.objects.all()
+        req.query
         pages = self.paginate_queryset(pets, req)
         serializer = PetSerializer(pages, many=True)
         return self.get_paginated_response(serializer.data)
@@ -48,14 +49,19 @@ class PetsView(APIView, PageNumberPagination):
 
 class PetsDetailsView(APIView):
     def get(self, req, pet_id):
+        print(pet_id)
         user = get_object_or_404(Pet, id=pet_id)
         serializer = PetSerializer(user)
         return Response(serializer.data)
 
     def patch(self, req, pet_id):
-        ...
+        print(pet_id)
+        pet = get_object_or_404(Pet, id=pet_id)
+        serializer = PetSerializer(pet, data=req.data, partial=True)
+        serializer.save()
+        return Response(serializer.data)
 
     def delete(self, req, pet_id):
-        user = get_object_or_404(Pet, id=pet_id)
-        user.delete()
+        pet = get_object_or_404(Pet, id=pet_id)
+        pet.delete()
         return Response(status=204)
